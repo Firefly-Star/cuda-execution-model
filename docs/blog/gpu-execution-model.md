@@ -459,3 +459,28 @@ SM 上只有 1 个 warp 的话，第 2 到第 4 个周期调度器无事可做�
 所以上面那张 warp 数的表，**是「这一次实验的记录」，不是「你这张卡需要多少个 warp」**。判断自己的 kernel 该放多少 warp，要先看它在等什么。
 
 最后补一句：**warp 也不是想加就能加的。** 上面那些是「放几个 warp 才喂得满」，但一个 SM 上实际能同时驻留多少 warp，还要看寄存器、共享内存、每 SM 的 block 数上限——这几条任何一条都能先把位置占掉。那是另一个话题了。
+
+---
+
+## 代码
+
+本文所有测量都在 GitHub 上：[**Firefly-Star/cuda-execution-model**](https://github.com/Firefly-Star/cuda-execution-model)
+
+| 文件 | 测什么 | 对应本文哪一节 |
+| --- | --- | --- |
+| `specs.cu` | 能直接查到的参数、block 落到哪个 SM | 相关参数 |
+| `flops.cu` | 实测 FP32 峰值反推 ALU 数量、「几个 warp 才够」的曲线 | 相关参数 / 单 SM 的 warp 数量 |
+| `stride.cu` | 数据装不装得进 L2、合并 vs 跨步 | bank 冲突 |
+| `bank.cu` | 共享内存的 bank 冲突 | bank 冲突 |
+| `occupancy.cu` | 占用率被什么限制 | 相关参数 |
+| `sched.cu` | block 调度的边际成本 + warp 切换的反证 | 调度开销 |
+
+```bash
+git clone https://github.com/Firefly-Star/cuda-execution-model
+cd cuda-execution-model/benchmarks/gpu-specs
+make run          # 六个全跑一遍，大约 1 分钟
+```
+
+**跑之前先插电，并且等 GPU 升频**——原因见上面「测量前必须做的两件事」。不满足的话所有数字都会偏低。
+
+仓库里还有一份[更详细的笔记](https://github.com/Firefly-Star/cuda-execution-model/blob/main/docs/gpu-execution-model.md)，含全部原始数据和每一步的推算过程。
