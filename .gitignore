@@ -1,0 +1,17 @@
+# 编译产物：每个 .cu 编译出同名可执行文件
+benchmarks/gpu-specs/specs
+benchmarks/gpu-specs/flops
+benchmarks/gpu-specs/stride
+benchmarks/gpu-specs/bank
+benchmarks/gpu-specs/occupancy
+benchmarks/gpu-specs/sched
+*.o
+*.cubin
+*.ptx
+*.nsys-rep
+*.sqlite
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
